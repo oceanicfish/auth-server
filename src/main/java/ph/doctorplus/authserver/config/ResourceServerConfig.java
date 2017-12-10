@@ -38,11 +38,13 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**", "/js/**", "/bootstrap/**", "/plugins/**", "/less/**", "/angularjs/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage("/login").successForwardUrl("/user/info").permitAll()
+//                .formLogin().loginPage("/login").successForwardUrl("/user/info").permitAll()
+                .formLogin().loginPage("/login").permitAll()
                 .and()
                 .rememberMe()
                 .and()
-                .logout().logoutUrl("/log_out").logoutSuccessUrl("/").permitAll();
+//                .logout().logoutUrl("/log_out").logoutSuccessUrl("/").permitAll();
+                .logout().logoutUrl("/log_out").permitAll();
 
         http.csrf().disable();
 

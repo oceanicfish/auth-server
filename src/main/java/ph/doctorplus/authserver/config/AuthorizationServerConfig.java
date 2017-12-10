@@ -38,7 +38,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 //can be customized
                 .scopes("read", "write", "trust")
                 //access token validation should be shorter
-                .accessTokenValiditySeconds(30)
+                .accessTokenValiditySeconds(120)
                 //refresh token validation should be longer than access token.
                 .refreshTokenValiditySeconds(2592000)
                 .autoApprove(true);
