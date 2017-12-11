@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -26,7 +27,7 @@ import java.util.Arrays;
 public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserDetailsService userDetailsService = new CustomUserDetailsService();
+    private UserDetailsService userDetailsService;
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
@@ -50,20 +51,31 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 
     }
 
+    /**
+     * set authentication builder
+     * @param auth
+     * @throws Exception
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
         /**
          * using JPA to get user info from a DB
          * password encoder -> encoding password in DB
+         * set an authentication provider with passwordEncoder is for checking the password
+         * between the raw password and the encoded one.
          */
-        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
-
+        auth.userDetailsService(userDetailsService);
+        auth.authenticationProvider(authenticationProvider());
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(HttpMethod.OPTIONS);
+        /**
+         * URLs added here is for access without authentication.
+         */
+        web.ignoring().antMatchers(HttpMethod.POST, "/signup**");
     }
 
     /**
@@ -80,6 +92,27 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    /**
+     * DaoAuthenticationProvider
+     * @return
+     */
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
+    }
+
+    /**
+     * Password Encoder Bean
+     * @return
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

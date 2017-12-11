@@ -3,6 +3,7 @@ package ph.doctorplus.authserver.bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -45,6 +46,9 @@ public class CustomUserDetails implements UserDetails {
 	@Column(name = "birthday", nullable = false)
 	private int birthday;
 
+	@Column(name = "image_url", nullable = true)
+	private String imageURL;
+
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -83,6 +87,7 @@ public class CustomUserDetails implements UserDetails {
 
 	@Override
 	public String getPassword() {
+
 		return password;
 	}
 
@@ -154,4 +159,14 @@ public class CustomUserDetails implements UserDetails {
 	public void setBirthday(int birthday) {
 		this.birthday = birthday;
 	}
+
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
+	}
+
+
 }
